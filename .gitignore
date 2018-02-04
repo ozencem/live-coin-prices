@@ -1,6 +1,7 @@
 build
 logs
 target
+*.iml
 /.idea
 /.idea_modules
 /.classpath
