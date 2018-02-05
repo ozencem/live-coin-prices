@@ -13,6 +13,7 @@ import akka.http.scaladsl.model.ws.{Message, TextMessage, WebSocketRequest, WebS
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, MergeHub, Sink, Source}
 import extractor.{BinanceExtractor, Ticker}
+import play.Environment
 import play.api._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc._
@@ -24,7 +25,8 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(cc: ControllerComponents)
+class HomeController @Inject()(cc: ControllerComponents,
+                               environment: Environment)
                               (implicit actorSystem: ActorSystem,
                                materializer: Materializer,
                                executionContext: ExecutionContext,
@@ -33,19 +35,21 @@ class HomeController @Inject()(cc: ControllerComponents)
 
   private val logger = Logger(getClass)
 
-  val sslContext = {
-    val context = SSLContext.getInstance("TLS")
-    val trustManager = new X509TrustManager {
-      override def checkServerTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
-      override def checkClientTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
-      override def getAcceptedIssuers: Array[X509Certificate] = null
+  if (environment.isDev) {
+    val sslContext = {
+      val context = SSLContext.getInstance("TLS")
+      val trustManager = new X509TrustManager {
+        override def checkServerTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
+        override def checkClientTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
+        override def getAcceptedIssuers: Array[X509Certificate] = null
+      }
+      context.init(null, Array(trustManager), null)
+      context
     }
-    context.init(null, Array(trustManager), null)
-    context
-  }
 
-  val httpsConnectionContext: HttpsConnectionContext = ConnectionContext.https(sslContext)
-  Http().setDefaultClientHttpsContext(httpsConnectionContext)
+    val httpsConnectionContext: HttpsConnectionContext = ConnectionContext.https(sslContext)
+    Http().setDefaultClientHttpsContext(httpsConnectionContext)
+  }
 
 
   private val (wsSink, wsSource) = {
@@ -73,7 +77,7 @@ class HomeController @Inject()(cc: ControllerComponents)
    * a path of `/`.
    */
   def index(): Action[AnyContent] = Action { implicit request: RequestHeader =>
-    val webSocketUrl = routes.HomeController.socket().webSocketURL()
+    val webSocketUrl = routes.HomeController.socket().webSocketURL(secure = true)
     Ok(views.html.index(webSocketUrl, tickers))
   }
 
