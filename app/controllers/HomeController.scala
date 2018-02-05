@@ -73,7 +73,7 @@ class HomeController @Inject()(cc: ControllerComponents)
    * a path of `/`.
    */
   def index(): Action[AnyContent] = Action { implicit request: RequestHeader =>
-    val webSocketUrl = routes.HomeController.socket().webSocketURL()
+    val webSocketUrl = routes.HomeController.socket().webSocketURL(secure = true)
     Ok(views.html.index(webSocketUrl, tickers))
   }
 
