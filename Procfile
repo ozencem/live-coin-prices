@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/live-coin-prices -Dhttps.port=$PORT
+web: target/universal/stage/bin/live-coin-prices -Dhttp.port=$PORT
