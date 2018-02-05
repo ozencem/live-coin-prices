@@ -1,3 +1,5 @@
+val akkaVersion = "2.5.8"
+
 name := """live-coin-prices"""
 organization := "org.ozencem"
 
