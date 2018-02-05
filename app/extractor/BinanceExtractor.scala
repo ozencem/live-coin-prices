@@ -23,6 +23,11 @@ class BinanceExtractor(val ticker: Ticker)(implicit actorSystem: ActorSystem,
 
   override val endpoint = ticker match {
     case Ticker.ETHBTC => s"${baseEndpoint}ethbtc@trade"
+    case Ticker.NEOBTC => s"${baseEndpoint}neobtc@trade"
+    case Ticker.REQBTC => s"${baseEndpoint}reqbtc@trade"
+    case Ticker.TRXBTC => s"${baseEndpoint}trxbtc@trade"
+    case Ticker.VENBTC => s"${baseEndpoint}venbtc@trade"
+    case Ticker.XRPBTC => s"${baseEndpoint}xrpbtc@trade"
     case ticker => throw new IllegalArgumentException(s"Endpoint for ${ticker.name} could not be found!")
   }
 

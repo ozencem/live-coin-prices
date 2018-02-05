@@ -56,9 +56,9 @@ class HomeController @Inject()(cc: ControllerComponents)
   }
 
   // TODO this is for debug
-  wsSource.runWith(Sink.foreach(println))
+  // wsSource.runWith(Sink.foreach(println))
 
-  new BinanceExtractor(Ticker.ETHBTC).start(wsSink)
+  Ticker.values.foreach(new BinanceExtractor(_).start(wsSink))
 
   private val userFlow = {
     Flow.fromSinkAndSource(Sink.ignore, wsSource)
