@@ -23,7 +23,9 @@ $( document ).ready(function() {
     connection.onmessage = function(event) {
         var obj = JSON.parse(event.data)
         for (var key in obj) {
-            $("#" + key.replace('/', '\\/')).html(obj[key] + " BTC");
+            var selector = "#" + key.replace('/', '\\/')
+            $(selector).html(obj[key] + " BTC");
+            $(selector).fadeTo(100, 0.08).fadeTo(200, 1.0)
         }
     }
 
