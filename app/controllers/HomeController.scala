@@ -144,8 +144,7 @@ class HomeController @Inject()(cc: ControllerComponents,
     val HttpsPort = Try(System.getProperty("https.port").toInt).getOrElse(config.get[Int]("https.port"))
     try {
       val url = new URI(origin)
-      url.getHost == "localhost" &&
-        (url.getPort match { case HttpPort | HttpsPort => true; case _ => false })
+      url.getHost == "localhost" || url.getHost == "live-coin-prices.herokuapp.com"
     } catch {
       case e: Exception => false
     }
