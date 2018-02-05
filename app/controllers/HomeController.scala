@@ -19,6 +19,8 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.util.Try
+import scala.util.control.NonFatal
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -26,7 +28,8 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
  */
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents,
-                               environment: Environment)
+                               environment: Environment,
+                              config: Configuration)
                               (implicit actorSystem: ActorSystem,
                                materializer: Materializer,
                                executionContext: ExecutionContext,
@@ -77,7 +80,7 @@ class HomeController @Inject()(cc: ControllerComponents,
    * a path of `/`.
    */
   def index(): Action[AnyContent] = Action { implicit request: RequestHeader =>
-    val webSocketUrl = routes.HomeController.socket().webSocketURL(secure = true)
+    val webSocketUrl = routes.HomeController.socket().webSocketURL(secure = environment.isProd)
     Ok(views.html.index(webSocketUrl, tickers))
   }
 
@@ -137,10 +140,12 @@ class HomeController @Inject()(cc: ControllerComponents,
     * Returns true if the value of the Origin header contains an acceptable value.
     */
   private def originMatches(origin: String): Boolean = {
+    val HttpPort = Try(System.getProperty("http.port").toInt).getOrElse(config.get[Int]("http.port"))
+    val HttpsPort = Try(System.getProperty("https.port").toInt).getOrElse(config.get[Int]("https.port"))
     try {
       val url = new URI(origin)
       url.getHost == "localhost" &&
-        (url.getPort match { case 9000 | 19001 => true; case _ => false })
+        (url.getPort match { case HttpPort | HttpsPort => true; case _ => false })
     } catch {
       case e: Exception => false
     }
