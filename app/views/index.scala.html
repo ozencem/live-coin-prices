@@ -1,5 +1,37 @@
-@()
+@(webSocketUrl: String, tickers: List[String])(implicit webJarsUtil: org.webjars.play.WebJarsUtil)
 
 @main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
+  <div class="wrap">
+    <div class="container-fluid">
+      <div>
+        <h1 class="">Live Coin Prices</h1>
+      </div>
+
+
+      <div>
+        <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Ticker</th>
+            <th scope="col">Binance</th>
+          </tr>
+        </thead>
+
+        @for(tickerName <- tickers) {
+            <tbody>
+              <tr>
+                <th scope="row">@tickerName</th>
+                <td id="@tickerName">N/A</td>
+              </tr>
+            </tbody>
+        })
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  @webJarsUtil.locate("jquery.min.js").script()
+  @webJarsUtil.locate("jquery.flot.min.js").script()
+  <script type='text/javascript' src='@routes.Assets.at("javascripts/main.js")' data-url='@webSocketUrl'></script>
 }
