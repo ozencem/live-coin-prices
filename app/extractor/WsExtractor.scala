@@ -14,7 +14,7 @@ import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-trait Extractor {
+trait WsExtractor {
 
   private val logger = Logger(getClass)
 
@@ -24,11 +24,13 @@ trait Extractor {
 
   def tickerName: String
 
+  def messagesToSendOnConnectionOpen: List[String]
+
   def start(wsSink: Sink[JsValue, _])(implicit actorSystem: ActorSystem,
                                       materializer: Materializer,
                                       executionContext: ExecutionContext) = {
 
-    val outgoing = Source.maybe[Message]
+    val outgoing = Source(messagesToSendOnConnectionOpen.map(TextMessage.Strict)).concat(Source.maybe)
 
     val incoming = Flow[Message].collect {
       case TextMessage.Strict(msg) => Future.successful(msg)
@@ -50,7 +52,7 @@ trait Extractor {
     scheduleReconnection(wsFlow)
   }
 
-  def createConnectionWithRetry(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
+  private def createConnectionWithRetry(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
                                                                    materializer: Materializer,
                                                                    executionContext: ExecutionContext): Unit = {
     try {
@@ -75,7 +77,7 @@ trait Extractor {
     }
   }
 
-  def scheduleReconnection(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
+  private def scheduleReconnection(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
                                                               materializer: Materializer,
                                                               executionContext: ExecutionContext): Unit = {
     logger.info("Scheduling connection attempt")
