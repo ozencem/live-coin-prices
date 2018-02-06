@@ -14,16 +14,16 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class BinanceExtractor(val ticker: Ticker)(implicit actorSystem: ActorSystem,
                                            mat: Materializer,
-                                           executionContext: ExecutionContext) extends Extractor {
+                                           executionContext: ExecutionContext) extends WsExtractor {
   private val logger = Logger(getClass)
-
-  private val baseEndpoint: String = "wss://stream.binance.com:9443/ws/"
 
   override val tickerName: String = ticker.name
 
+  override val messagesToSendOnConnectionOpen: List[String] = List.empty
+
   override val endpoint = {
     val binanceTicker = ticker.name.toLowerCase.replace("/", "")
-    s"${baseEndpoint}$binanceTicker@trade"
+    s"${"wss://stream.binance.com:9443/ws/"}$binanceTicker@aggTrade"
   }
 
   override val priceMapper: (String => JsValue) = (msg: String) => (Json.parse(msg) \ "p").get
