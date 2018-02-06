@@ -47,7 +47,7 @@ trait Extractor {
       incoming,
       outgoing)
 
-    createConnectionWithRetry(wsFlow)
+    scheduleReconnection(wsFlow)
   }
 
   def createConnectionWithRetry(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
@@ -57,19 +57,28 @@ trait Extractor {
       val (upgradeResponse, promise) =
         Http().singleWebSocketRequest(
         WebSocketRequest(endpoint),
-        wsFlow)
+        Flow[Message].alsoTo(Sink.onComplete(_ => scheduleReconnection(wsFlow))).via(wsFlow))
 
       upgradeResponse.map { upgrade =>
         if (upgrade.response.status == StatusCodes.SwitchingProtocols) {
           Done
         } else {
           logger.warn(s"Connection failed: ${upgrade.response.status}")
+          scheduleReconnection(wsFlow)
         }
       }
 
     } catch {
       case NonFatal(e) =>
         logger.warn("Could not create websocket connection!", e)
+        scheduleReconnection(wsFlow)
     }
+  }
+
+  def scheduleReconnection(wsFlow: Flow[Message, Message, _])(implicit actorSystem: ActorSystem,
+                                                              materializer: Materializer,
+                                                              executionContext: ExecutionContext): Unit = {
+    logger.info("Scheduling connection attempt")
+    actorSystem.scheduler.scheduleOnce(2 seconds)(createConnectionWithRetry(wsFlow))
   }
 }
