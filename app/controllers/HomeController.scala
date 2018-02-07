@@ -39,23 +39,6 @@ class HomeController @Inject()(cc: ControllerComponents,
 
   private val logger = Logger(getClass)
 
-  if (environment.isDev) {
-    val sslContext = {
-      val context = SSLContext.getInstance("TLS")
-      val trustManager = new X509TrustManager {
-        override def checkServerTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
-        override def checkClientTrusted(x509Certificates: Array[X509Certificate], s: String): Unit = {}
-        override def getAcceptedIssuers: Array[X509Certificate] = null
-      }
-      context.init(null, Array(trustManager), null)
-      context
-    }
-
-    val httpsConnectionContext: HttpsConnectionContext = ConnectionContext.https(sslContext)
-    Http().setDefaultClientHttpsContext(httpsConnectionContext)
-  }
-
-
   private val (wsSink, wsSource) = {
     val wsSink = BroadcastHub.sink[JsValue]
     val wsSource = MergeHub.source[JsValue]
