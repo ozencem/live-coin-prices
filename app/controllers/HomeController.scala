@@ -10,9 +10,9 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.{ConnectionContext, Http, HttpsConnectionContext}
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.ws.{Message, TextMessage, WebSocketRequest, WebSocketUpgradeResponse}
-import akka.stream.{ActorMaterializer, Materializer}
+import akka.stream.{ActorMaterializer, Materializer, ThrottleMode}
 import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, MergeHub, Sink, Source}
-import extractor.{BinanceExtractor, Ticker}
+import extractor.{BinanceExtractor, BittrexExtractor, Ticker}
 import play.Environment
 import play.api._
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -65,21 +65,13 @@ class HomeController @Inject()(cc: ControllerComponents,
 
   // TODO this is for debug
   // wsSource.runWith(Sink.foreach(println))
-
   Ticker.values.foreach(new BinanceExtractor(_).start(wsSink))
+  Ticker.values.foreach(new BittrexExtractor(_).start(wsSink))
 
   private val userFlow = {
     Flow.fromSinkAndSource(Sink.ignore, wsSource)
   }
 
-
-  /**
-   * Create an Action to render an HTML page.
-   *
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
   def index(): Action[AnyContent] = Action { implicit request: RequestHeader =>
     val webSocketUrl = routes.HomeController.socket().webSocketURL(secure = environment.isProd)
     Ok(views.html.index(webSocketUrl, tickers))
