@@ -27,6 +27,4 @@ $( document ).ready(function() {
         $(selector).clearQueue()
         $(selector).fadeTo(100, 0.08).fadeTo(200, 1.0)
     }
-
-    console.log( "chat app is running!" );
 });

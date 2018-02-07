@@ -61,12 +61,4 @@ trait HttpExtractor {
         "e" -> exchangeName))
       .toMat(wsSink) (Keep.right) .run()
   }
-
-  def sendReq()(implicit actorSystem: ActorSystem,
-                materializer: Materializer,
-                executionContext: ExecutionContext): Future[HttpResponse] = {
-    println("sending Request!!!!!!")
-    val request = HttpRequest(uri = endpoint)
-    Http().singleRequest(request)
-  }
 }
