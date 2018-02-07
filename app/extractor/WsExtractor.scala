@@ -41,6 +41,16 @@ trait WsExtractor {
       .buffer(1, OverflowStrategy.dropHead)
       .throttle(1, 500 milliseconds, 1, ThrottleMode.Shaping)
       .map(priceMapper)
+      .statefulMapConcat { () =>
+        var lastPrice = "N/A"
+        price =>
+          if (price == lastPrice) {
+            List.empty
+          } else {
+            lastPrice = price
+            List(price)
+          }
+      }
       .map(p => Json.obj(tickerName -> p))
       .toMat(wsSink) (Keep.right)
 
