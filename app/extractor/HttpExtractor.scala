@@ -18,6 +18,8 @@ trait HttpExtractor {
 
   def endpoint: String
 
+  def exchangeName: String
+
   def priceMapper: String => String
 
   def tickerName: String

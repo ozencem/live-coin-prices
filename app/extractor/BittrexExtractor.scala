@@ -15,6 +15,8 @@ class BittrexExtractor(val ticker: Ticker)(implicit actorSystem: ActorSystem,
 
   override val tickerName: String = ticker.name
 
+  override val exchangeName: String = "Bittrex"
+
   override val endpoint: String = "https://bittrex.com/api/v1.1/public/getticker?market=" + tickerName.split("/").reverse.mkString("-")
 
   override val priceMapper: (String => String) = (msg: String) => (Json.parse(msg) \ "result" \ "Last").asOpt[Double].map(_.toString).getOrElse("N/A")

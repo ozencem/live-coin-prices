@@ -19,6 +19,8 @@ class BinanceExtractor(val ticker: Ticker)(implicit actorSystem: ActorSystem,
 
   override val tickerName: String = ticker.name
 
+  override val exchangeName: String = "Binance"
+
   override val messagesToSendOnConnectionOpen: List[String] = List.empty
 
   override val endpoint = {
