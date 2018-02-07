@@ -53,7 +53,10 @@ trait WsExtractor {
             List(price)
           }
       }
-      .map(p => Json.obj(tickerName -> p))
+      .map(p => Json.obj(
+        "t" -> tickerName,
+        "p" -> p,
+        "e" -> exchangeName))
       .toMat(wsSink) (Keep.right)
 
     val wsFlow: Flow[Message, Message, _] = Flow.fromSinkAndSource(
