@@ -40,7 +40,7 @@ trait HttpExtractor {
           entity.toStrict(100 milliseconds).map(_.data).flatMap(x => Future.successful(x.utf8String))
         case other =>
           logger.warn(s"http request failed, ${other}")
-          Future.successful("")
+          Future.successful("{}")
       }
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
       .mapAsync(4) (identity)
