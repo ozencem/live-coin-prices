@@ -10,15 +10,14 @@ object Ticker {
   object NEOBTC extends Ticker("NEO/BTC")
   object XMRBTC extends Ticker("XMR/BTC")
   object XLMBTC extends Ticker("XLM/BTC")
-  object VENBTC extends Ticker("VEN/BTC")
+  object DASHBTC extends Ticker("DASH/BTC")
   object REQBTC extends Ticker("REQ/BTC")
-  object WTCBTC extends Ticker("WTC/BTC")
-  object KCSBTC extends Ticker("KCS/BTC")
-  object ZRXBTC extends Ticker("ZRX/BTC")
-  object TRXBTC extends Ticker("TRX/BTC")
+  object OMGBTC extends Ticker("OMG/BTC")
+  object LSKBTC extends Ticker("LSK/BTC")
+  object WAVESBTC extends Ticker("WAVES/BTC")
   object ENGBTC extends Ticker("ENG/BTC")
   object FUNBTC extends Ticker("FUN/BTC")
 
-  val values = Seq(ETHBTC, ADABTC, XRPBTC, LTCBTC, NEOBTC, XMRBTC, XLMBTC, VENBTC, REQBTC,
-    WTCBTC, KCSBTC, ZRXBTC, TRXBTC, ENGBTC, FUNBTC)
+  val values = Seq(ETHBTC, ADABTC, XRPBTC, LTCBTC, NEOBTC, XMRBTC, XLMBTC, DASHBTC, REQBTC,
+    OMGBTC, LSKBTC, WAVESBTC, ENGBTC, FUNBTC)
 }
