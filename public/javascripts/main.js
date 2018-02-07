@@ -24,7 +24,7 @@ $( document ).ready(function() {
         var obj = JSON.parse(event.data)
         var selector = "#" + obj["e"] + "\\-" + obj["t"].replace('/', '\\/')
         $(selector).html(obj["p"] + " BTC");
-        $(selector).fadeTo(100, 0.08).fadeTo(200, 1.0)
+        $(selector).stop().fadeTo(100, 0.08).fadeTo(200, 1.0)
     }
 
     console.log( "chat app is running!" );
