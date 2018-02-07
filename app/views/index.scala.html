@@ -16,16 +16,15 @@
             <th scope="col">Bittrex</th>
           </tr>
         </thead>
-
-        @for(tickerName <- tickers) {
-            <tbody>
-              <tr>
-                <th scope="row">@tickerName</th>
-                <td id="Binance-@tickerName">N/A</td>
-                <td id="Bittrex-@tickerName">N/A</td>
-              </tr>
-            </tbody>
-        }
+        <tbody>
+          @for(tickerName <- tickers) {
+            <tr>
+              <th scope="row">@tickerName</th>
+              <td id="Binance-@tickerName">N/A</td>
+              <td id="Bittrex-@tickerName">N/A</td>
+            </tr>
+          }
+        </tbody>
         </table>
       </div>
 
