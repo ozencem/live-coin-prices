@@ -26,5 +26,5 @@ class BinanceExtractor(val ticker: Ticker)(implicit actorSystem: ActorSystem,
     s"${"wss://stream.binance.com:9443/ws/"}$binanceTicker@aggTrade"
   }
 
-  override val priceMapper: (String => JsValue) = (msg: String) => (Json.parse(msg) \ "p").get
+  override val priceMapper: (String => String) = (msg: String) => (Json.parse(msg) \ "p").asOpt[Double].map(_.toString).getOrElse("N/A")
 }

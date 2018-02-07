@@ -20,7 +20,7 @@ trait WsExtractor {
 
   def endpoint: String
 
-  def priceMapper: String => JsValue
+  def priceMapper: String => String
 
   def tickerName: String
 
@@ -31,7 +31,6 @@ trait WsExtractor {
                                       executionContext: ExecutionContext) = {
 
     val outgoing = Source(messagesToSendOnConnectionOpen.map(TextMessage.Strict)).concat(Source.maybe)
-
     val incoming = Flow[Message].collect {
       case TextMessage.Strict(msg) => Future.successful(msg)
       case TextMessage.Streamed(stream) => stream

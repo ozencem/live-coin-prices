@@ -21,6 +21,7 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.Try
 import scala.util.control.NonFatal
+import scala.concurrent.duration.DurationInt
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
