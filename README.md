@@ -1,6 +1,6 @@
 # Live Coin Prices
 
-Live Coin Prices (LCP) is a real-time cryptocurrency price monitoring website. Prices are taken from various exchanges and updated as soon as new data becomes available.
+Live Coin Prices (LCP) is a real-time cryptocurrency price monitoring website. Prices are taken from various exchanges and updated as soon as new data becomes available. LCP is written in Scala and is powered by Play! Framework, Akka Streams and Akka Http.
 
 For a live demo, please visit: http://live-coin-prices.herokuapp.com/
 
