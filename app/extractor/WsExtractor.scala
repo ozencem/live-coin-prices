@@ -80,14 +80,12 @@ trait WsExtractor {
           Done
         } else {
           logger.warn(s"Connection failed: ${upgrade.response.status}")
-          scheduleReconnection(wsFlow)
         }
       }
 
     } catch {
       case NonFatal(e) =>
         logger.warn("Could not create websocket connection!", e)
-        scheduleReconnection(wsFlow)
     }
   }
 
