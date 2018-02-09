@@ -1,5 +1,7 @@
 package extractor
 
+import java.util.concurrent.TimeoutException
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.Uri.Query
@@ -29,6 +31,7 @@ trait HttpExtractor {
                                       executionContext: ExecutionContext) = {
     val decider: Supervision.Decider = {
       case _: BufferOverflowException => Supervision.resume
+      case _: TimeoutException => Supervision.resume
       case _ => Supervision.stop
     }
 
