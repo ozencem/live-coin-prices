@@ -12,7 +12,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.ws.{Message, TextMessage, WebSocketRequest, WebSocketUpgradeResponse}
 import akka.stream.{ActorMaterializer, Materializer, ThrottleMode}
 import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, MergeHub, Sink, Source}
-import extractor.{BinanceExtractor, BittrexExtractor, Ticker}
+import extractor.{BinanceExtractor, BittrexExtractor, HitBtcExtractor, Ticker}
 import play.Environment
 import play.api._
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -50,6 +50,7 @@ class HomeController @Inject()(cc: ControllerComponents,
   // wsSource.runWith(Sink.foreach(println))
   Ticker.values.foreach(new BinanceExtractor(_).start(wsSink))
   Ticker.values.foreach(new BittrexExtractor(_).start(wsSink))
+  Ticker.values.foreach(new HitBtcExtractor(_).start(wsSink))
 
   private val userFlow = {
     Flow.fromSinkAndSource(Sink.ignore, wsSource)
