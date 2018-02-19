@@ -40,13 +40,13 @@ trait HttpExtractor {
       .mapAsync(4) (identity)
       .map {
         case HttpResponse(StatusCodes.OK, _, entity, _) =>
-          entity.toStrict(100 milliseconds).map(_.data).flatMap(x => Future.successful(x.utf8String))
+          entity.toStrict(200 milliseconds).map(_.data).flatMap(x => Future.successful(x.utf8String))
         case other =>
           logger.warn(s"http request failed, ${other}")
           Future.successful("{}")
       }
-      .withAttributes(ActorAttributes.supervisionStrategy(decider))
       .mapAsync(4) (identity)
+      .withAttributes(ActorAttributes.supervisionStrategy(decider))
       .map(priceMapper)
       .statefulMapConcat { () =>
         var lastPrice = "N/A"
